@@ -1,0 +1,54 @@
+{
+    "servers": [
+        {
+            "protocol": "http",
+            "enabled": true,
+            "host": "10.0.2.15",
+            "port": 1339,
+            "timeout": 30000,
+            "timeWindow": 10000,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+                "Access-Control-Max-Age": 2592000
+            }
+        },
+        {
+            "protocol": "https",
+            "enabled": false,
+            "host": "10.0.2.15",
+            "port": 1338,
+            "key": "key.pem",
+            "cert": "cert.pem",
+            "timeout": 30000,
+            "timeWindow": 10000,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+                "Access-Control-Max-Age": 2592000
+            }
+        }
+    ],
+    "databases": {
+        "main": {
+            "host": "localhost",
+            "user": "dev",
+            "password": "",
+            "database": "tournament"
+        }
+    },
+    "repositories": {
+        "access": {
+            "class": "AccessRepository",
+            "path": "node_modules/serverjs/dist/repositories/accessRepository",
+            "database": "main",
+            "table": "accesses"
+        },
+        "account": {
+            "class": "AccountRepository",
+            "path": "node_modules/serverjs/dist/repositories/accountRepository",
+            "database": "main",
+            "table": "accounts"
+        }
+    }
+}

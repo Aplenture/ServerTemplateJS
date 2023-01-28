@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `accesses` (
+    `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `created` TIMESTAMP NOT NULL,
+    `expiration` TIMESTAMP NULL,
+    `account` BIGINT NOT NULL,
+    `api` TEXT NOT NULL,
+    `secret` TEXT NOT NULL,
+    `label` TEXT NULL
+) DEFAULT CHARSET=utf8
