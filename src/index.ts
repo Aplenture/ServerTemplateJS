@@ -48,11 +48,23 @@ Server.Database.onMessage.on((message, database) => log.write(message, database.
 Server.App.onMessage.on((message, app) => log.write(message, app.name));
 Server.App.onError.on((error, app) => log.error(error, app.name));
 Server.App.onMessage.on((_, app) => {
-    log.write("add command 'changepw'", app.name);
-    app.addCommand("changepw", Server.ChangePassword, config, context);
+    log.write(`add command '${Server.Ping.name}'`, app.name);
+    app.addCommand(Server.Ping.name, Server.Ping, config, context);
 
-    log.write("add command 'register'", app.name);
-    app.addCommand("register", Server.RegisterUser, config, context);
+    log.write(`add command '${Server.HasAccess.name}'`, app.name);
+    app.addCommand(Server.HasAccess.name, Server.HasAccess, config, context);
+
+    log.write(`add command '${Server.RegisterUser.name}'`, app.name);
+    app.addCommand(Server.RegisterUser.name, Server.RegisterUser, config, context);
+
+    log.write(`add command '${Server.LoginUser.name}'`, app.name);
+    app.addCommand(Server.LoginUser.name, Server.LoginUser, config, context);
+
+    log.write(`add command '${Server.LogoutUser.name}'`, app.name);
+    app.addCommand(Server.LogoutUser.name, Server.LogoutUser, config, context);
+
+    log.write(`add command '${Server.ChangeUserPassword.name}'`, app.name);
+    app.addCommand(Server.ChangeUserPassword.name, Server.ChangeUserPassword, config, context);
 
     Object.keys(Commands).forEach(command => {
         log.write(`add command '${command}'`, app.name);
@@ -61,7 +73,7 @@ Server.App.onMessage.on((_, app) => {
 }, { args: 'init' });
 
 commander.addCommand("start", Server.StartServer, config, context);
-commander.addCommand("changepw", Server.ChangePassword, config, context);
+commander.addCommand("changepw", Server.ChangeUserPassword, config, context);
 commander.addCommand("register", Server.RegisterUser, config, context);
 commander.addCommand("reset", Server.ResetDatabase, config, context);
 commander.addCommand("update", Server.UpdateDatabase, config, context);
