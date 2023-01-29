@@ -90,5 +90,5 @@ Object.keys(Commands).forEach(command => commander.addCommand(command, Commands[
     }
 
     stopwatch.stop();
-    log.write("execution duration: " + Foundation.formatDuration(stopwatch.duration, { seconds: true, milliseconds: true }));
+    log.write("runtime: " + Foundation.formatDuration(stopwatch.duration, { seconds: true, milliseconds: true }));
 })();
