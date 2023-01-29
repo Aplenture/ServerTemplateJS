@@ -38,11 +38,11 @@
         }
     },
     "repositories": {
-        "access": {
+        "AccessRepository": {
             "database": "main",
             "table": "accesses"
         },
-        "account": {
+        "AccountRepository": {
             "database": "main",
             "table": "accounts"
         }
