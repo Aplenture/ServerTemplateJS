@@ -1,16 +1,18 @@
+import { AccessRepository, AccountRepository, ChangeUserPassword, Command, Commander, Database, formatDuration, HasAccess, Log, LoginUser, LogoutUser, Ping, RegisterUser, ResetDatabase, Server, ServerConfig, StartServer, Stopwatch, UpdateDatabase } from "aplenturejs";
 import * as FS from "fs";
-import * as Aplenture from "aplenturejs";
 import * as Commands from "./commands";
-import { Config, Context } from "./models";
+import * as Repositories from "./repositories";
+import { Config } from "./models/config";
+import { Context } from "./models/context";
 
-const stopwatch = new Aplenture.Stopwatch();
+const stopwatch = new Stopwatch();
 
 stopwatch.start();
 
 const TIMEOUT_EXIT = 1000;
 
-const infos: Aplenture.ServerConfig = JSON.parse(FS.readFileSync(process.env.PWD + '/package.json').toString());
-const log = Aplenture.Log.createFileLog(`${process.env.PWD}/${infos.name}.log`);
+const infos: ServerConfig = JSON.parse(FS.readFileSync(process.env.PWD + '/package.json').toString());
+const log = Log.createFileLog(`${process.env.PWD}/${infos.name}.log`);
 
 process.title = infos.name;
 
@@ -31,39 +33,33 @@ const context: Context = {
 };
 
 const command = process.argv.slice(2).join(' ') || "help";
-const commander = new Aplenture.Commander();
+const commander = new Commander();
 
-Object.keys(config.databases).forEach(name => context.databases[name] = new Aplenture.Database(name, config.databases[name]));
-Object.keys(config.repositories).forEach(name => context.repositories[name] = Aplenture.createInstance<Aplenture.Repository<any>>(
-    config.repositories[name].path,
-    config.repositories[name].class,
-    context.databases[config.repositories[name].database],
-    config.repositories[name]
-));
+Object.keys(config.databases).forEach(name => context.databases[name] = new Database(name, config.databases[name]));
 
-Aplenture.Commander.onMessage.on(message => log.write(message, 'commander'));
-Aplenture.Command.onMessage.on((message, command) => log.write(message, command.constructor.name));
-Aplenture.Database.onMessage.on((message, database) => log.write(message, database.name));
-Aplenture.Server.onMessage.on((message, app) => log.write(message, app.name));
-Aplenture.Server.onError.on((error, app) => log.error(error, app.name));
-Aplenture.Server.onMessage.on((_, app) => {
-    log.write(`add command '${Aplenture.Ping.name}'`, app.name);
-    app.addCommand(Aplenture.Ping.name, Aplenture.Ping, config, context);
+Commander.onMessage.on(message => log.write(message, 'commander'));
+Command.onMessage.on((message, command) => log.write(message, command.constructor.name));
+Database.onMessage.on((message, database) => log.write(message, database.name));
+Server.onMessage.on((message, app) => log.write(message, app.name));
+Server.onError.on((error, app) => log.error(error, app.name));
+Server.onMessage.on((_, app) => {
+    log.write(`add command '${Ping.name}'`, app.name);
+    app.addCommand(Ping.name, Ping, config, context);
 
-    log.write(`add command '${Aplenture.HasAccess.name}'`, app.name);
-    app.addCommand(Aplenture.HasAccess.name, Aplenture.HasAccess, config, context);
+    log.write(`add command '${HasAccess.name}'`, app.name);
+    app.addCommand(HasAccess.name, HasAccess, config, context);
 
-    log.write(`add command '${Aplenture.RegisterUser.name}'`, app.name);
-    app.addCommand(Aplenture.RegisterUser.name, Aplenture.RegisterUser, config, context);
+    log.write(`add command '${RegisterUser.name}'`, app.name);
+    app.addCommand(RegisterUser.name, RegisterUser, config, context);
 
-    log.write(`add command '${Aplenture.LoginUser.name}'`, app.name);
-    app.addCommand(Aplenture.LoginUser.name, Aplenture.LoginUser, config, context);
+    log.write(`add command '${LoginUser.name}'`, app.name);
+    app.addCommand(LoginUser.name, LoginUser, config, context);
 
-    log.write(`add command '${Aplenture.LogoutUser.name}'`, app.name);
-    app.addCommand(Aplenture.LogoutUser.name, Aplenture.LogoutUser, config, context);
+    log.write(`add command '${LogoutUser.name}'`, app.name);
+    app.addCommand(LogoutUser.name, LogoutUser, config, context);
 
-    log.write(`add command '${Aplenture.ChangeUserPassword.name}'`, app.name);
-    app.addCommand(Aplenture.ChangeUserPassword.name, Aplenture.ChangeUserPassword, config, context);
+    log.write(`add command '${ChangeUserPassword.name}'`, app.name);
+    app.addCommand(ChangeUserPassword.name, ChangeUserPassword, config, context);
 
     Object.keys(Commands).forEach(command => {
         log.write(`add command '${command}'`, app.name);
@@ -71,12 +67,16 @@ Aplenture.Server.onMessage.on((_, app) => {
     });
 }, { args: 'init' });
 
-commander.addCommand("start", Aplenture.StartServer, config, context);
-commander.addCommand("changepw", Aplenture.ChangeUserPassword, config, context);
-commander.addCommand("register", Aplenture.RegisterUser, config, context);
-commander.addCommand("reset", Aplenture.ResetDatabase, config, context);
-commander.addCommand("update", Aplenture.UpdateDatabase, config, context);
+commander.addCommand("start", StartServer, config, context);
+commander.addCommand("changepw", ChangeUserPassword, config, context);
+commander.addCommand("register", RegisterUser, config, context);
+commander.addCommand("reset", ResetDatabase, config, context);
+commander.addCommand("update", UpdateDatabase, config, context);
 
+context.repositories[AccessRepository.name] = new AccessRepository(context.databases[config.repositories[AccessRepository.name].database], config.repositories[AccessRepository.name].table);
+context.repositories[AccountRepository.name] = new AccountRepository(context.databases[config.repositories[AccountRepository.name].database], config.repositories[AccountRepository.name].table);
+
+Object.keys(Repositories).forEach(name => context.repositories[name] = new Repositories[name](context.databases[config.repositories[name].database], config.repositories[name].table));
 Object.keys(Commands).forEach(command => commander.addCommand(command, Commands[command], config, context));
 
 (async function () {
@@ -89,5 +89,5 @@ Object.keys(Commands).forEach(command => commander.addCommand(command, Commands[
     }
 
     stopwatch.stop();
-    log.write("runtime: " + Aplenture.formatDuration(stopwatch.duration, { seconds: true, milliseconds: true }));
+    log.write("runtime: " + formatDuration(stopwatch.duration, { seconds: true, milliseconds: true }));
 })();
