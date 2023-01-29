@@ -22,6 +22,7 @@
     },
     "homepage": "https://github.com/Aplenture/<name>#readme",
     "dependencies": {
+        "foundationjs": "github:Aplenture/FoundationJS",
         "serverjs": "github:Aplenture/ServerJS"
     },
     "devDependencies": {
