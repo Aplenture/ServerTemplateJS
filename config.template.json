@@ -40,13 +40,13 @@
     "repositories": {
         "access": {
             "class": "AccessRepository",
-            "path": "node_modules/serverjs/dist/repositories/accessRepository",
+            "path": "node_modules/aplenturejs/dist/server/repositories/accessRepository",
             "database": "main",
             "table": "accesses"
         },
         "account": {
             "class": "AccountRepository",
-            "path": "node_modules/serverjs/dist/repositories/accountRepository",
+            "path": "node_modules/aplenturejs/dist/server/repositories/accountRepository",
             "database": "main",
             "table": "accounts"
         }

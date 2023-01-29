@@ -1,7 +1,7 @@
-import * as Server from "serverjs";
+import * as Aplenture from "aplenturejs";
 
-export interface Config extends Server.AppConfig {
-    readonly servers: readonly Server.ServerConfig[];
-    readonly databases: NodeJS.ReadOnlyDict<Server.DatabaseConfig>;
-    readonly repositories: NodeJS.ReadOnlyDict<Server.RepositoryConfig>;
+export interface Config extends Aplenture.ServerConfig {
+    readonly Aplentures: readonly Aplenture.HTTPConfig[];
+    readonly databases: NodeJS.ReadOnlyDict<Aplenture.DatabaseConfig>;
+    readonly repositories: NodeJS.ReadOnlyDict<Aplenture.RepositoryConfig>;
 }
