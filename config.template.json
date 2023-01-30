@@ -34,7 +34,7 @@
             "host": "localhost",
             "user": "dev",
             "password": "",
-            "database": "tournament"
+            "database": "<name>"
         }
     },
     "repositories": {
