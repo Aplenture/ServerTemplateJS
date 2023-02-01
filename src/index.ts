@@ -36,7 +36,10 @@ const TIMEOUT_EXIT = 1000;
     const command = process.argv.slice(2).join(' ') || "help";
     const commander = new Commander();
 
-    Object.keys(config.databases).forEach(name => context.databases[name] = new Database(name, config.databases[name]));
+    Object.keys(config.databases).forEach(name => {
+        context.databases[name] = new Database(name, config.databases[name]);
+        context.databases[name].init();
+    });
 
     Commander.onMessage.on(message => log.write(message, 'commander'));
     Command.onMessage.on((message, command) => log.write(message, command.constructor.name));
@@ -89,6 +92,10 @@ const TIMEOUT_EXIT = 1000;
         setTimeout(() => process.exit(error.code || -1), TIMEOUT_EXIT);
     }
 
+    Object.values(context.databases).forEach(database => database.close());
+
     stopwatch.stop();
+
     log.write("runtime: " + formatDuration(stopwatch.duration, { seconds: true, milliseconds: true }));
+    log.close();
 })();
