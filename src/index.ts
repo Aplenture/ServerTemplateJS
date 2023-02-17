@@ -89,6 +89,7 @@ const TIMEOUT_EXIT = 1000;
 
         process.stdout.write(result.toString());
     } catch (error) {
+        process.stdout.write(error.stack + '\n');
         setTimeout(() => process.exit(error.code || -1), TIMEOUT_EXIT);
     }
 
