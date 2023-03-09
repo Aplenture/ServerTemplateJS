@@ -1,11 +1,23 @@
-import { Response, ServerCommand } from "aplenturejs";
+import { CommandArgs, Response, ServerCommand } from "aplenturejs";
 
-export class MyCommand extends ServerCommand<any, any, any> {
+interface Config {
+}
+
+interface Context {
+    readonly repositories: {
+    }
+}
+
+interface Args {
+}
+
+export class MyCommand extends ServerCommand<Config, Context, Args> {
     public readonly isPrivate = false;
     public readonly description = "My description.";
-    public readonly property = null;
+    public readonly property = new CommandArgs<Args>(
+    );
 
-    public execute(args: any): Promise<Response> {
+    public execute(args: Args): Promise<Response> {
         throw new Error("Method not implemented.");
     }
 }
