@@ -20,3 +20,8 @@
     sudo systemctl enable <name>.service
     sudo systemctl start <name>.service
     ```
+## Tests
+Run mocha/chai tests
+```
+npm test
+```
