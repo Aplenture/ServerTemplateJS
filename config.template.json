@@ -39,12 +39,18 @@
     },
     "repositories": {
         "AccessRepository": {
+            "class": "AccessRepository",
+            "path": "node_modules/aplenturejs/dist/server/repositories/accessRepository",
             "database": "main",
             "table": "accesses"
         },
         "AccountRepository": {
+            "class": "AccountRepository",
+            "path": "node_modules/aplenturejs/dist/server/repositories/accountRepository",
             "database": "main",
             "table": "accounts"
         }
-    }
+    },
+    "globalCommands": {},
+    "localCommands": {}
 }

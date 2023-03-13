@@ -1,6 +1,4 @@
-import { Database, Repository } from "aplenturejs";
+import { Database, Repository, ServerContext } from "aplenturejs";
 
-export interface Context {
-    readonly databases: NodeJS.Dict<Database>;
-    readonly repositories: NodeJS.Dict<Repository>;
+export interface Context extends ServerContext {
 }
